@@ -1,0 +1,87 @@
+CREATE DATABASE propeasy;
+USE propeasy;
+
+-- Properties table (for buyers and owners)
+CREATE TABLE properties (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    location VARCHAR(100),
+    price DECIMAL(15, 2),
+    type ENUM('house', 'apartment', 'land'),
+    image VARCHAR(255),
+    description TEXT,
+    owner_id INT -- Links to owners table if added later
+);
+
+-- Buyers table (tracks buyer interest)
+CREATE TABLE buyers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    property_id INT,
+    request_type ENUM('viewing', 'buy'),
+    request_date DATE,
+    FOREIGN KEY (property_id) REFERENCES properties(id)
+);
+
+-- Tenants table (for owner management)
+CREATE TABLE tenants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    property_id INT,
+    application_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    applied_date DATE,
+    FOREIGN KEY (property_id) REFERENCES properties(id)
+);
+
+-- Leases table (for owner management)
+CREATE TABLE leases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT,
+    property_id INT,
+    start_date DATE,
+    end_date DATE,
+    rent_amount DECIMAL(10, 2),
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    FOREIGN KEY (property_id) REFERENCES properties(id)
+);
+
+-- Maintenance requests table (for owner management)
+CREATE TABLE maintenance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT,
+    property_id INT,
+    issue TEXT,
+    status ENUM('new', 'working', 'done') DEFAULT 'new',
+    request_date DATE,
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    FOREIGN KEY (property_id) REFERENCES properties(id)
+);
+
+-- Sample data for properties
+INSERT INTO properties (title, location, price, type, image, description) VALUES
+('Cozy Cottage', 'Pune', 7500000, 'house', 'https://via.placeholder.com/320x220?text=Cozy+Cottage', '2BHK with garden'),
+('Urban Flat', 'Mumbai', 12000000, 'apartment', 'https://via.placeholder.com/320x220?text=Urban+Flat', '3BHK near station'),
+('Open Land', 'Delhi', 4500000, 'land', 'https://via.placeholder.com/320x220?text=Open+Land', '800 sq.ft plot');
+
+
+
+
+
+
+
+
+
+CREATE TABLE payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    buyer_id INT,
+    property_id INT,
+    amount DECIMAL(15, 2),
+    payment_date DATE,
+    stripe_payment_id VARCHAR(100),
+    FOREIGN KEY (buyer_id) REFERENCES buyers(id),
+    FOREIGN KEY (property_id) REFERENCES properties(id)
+);

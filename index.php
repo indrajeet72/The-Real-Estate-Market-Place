@@ -73,6 +73,7 @@ $props_json = json_encode($props); // Pass all properties to JavaScript
             <h3>Pay for Property</h3>
             <div id="card-slot"></div>
             <button id="pay-submit">Pay Now</button>
+            <a href="index.php" style="color: black;text-decoration: none;">Cancel</a>
             <p id="pay-msg"></p>
             <input type="hidden" id="pay-prop-id">
             <input type="hidden" id="pay-amount">
@@ -80,7 +81,7 @@ $props_json = json_encode($props); // Pass all properties to JavaScript
     </div>
 
     <script>
-        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe Publishable Key
+        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY'); 
         const elements = stripe.elements();
         const card = elements.create('card', { style: { base: { fontSize: '14px' } } });
         card.mount('#card-slot');
